@@ -23,25 +23,27 @@ import org.springframework.stereotype.Service;
 public class DiscoveryService {
     
     private DiscoveryClient  discoveryClient;
+    private LoadBalancer loadBalancer;
 
     @Autowired
-    public DiscoveryService(DiscoveryClient discoveryClient) {
+    public DiscoveryService(DiscoveryClient discoveryClient,
+            LoadBalancer loadBalancer) {
         this.discoveryClient = discoveryClient;
+        this.loadBalancer = loadBalancer;
     }
 
     public URI getInstance(final String appName) {
         
-        List<ServiceInstance> instances = this.discoveryClient.getInstances(appName);
-        
-        System.out.println("instances size: " + instances.size());
+        final List<ServiceInstance> instances = this.discoveryClient.getInstances(appName);
         
         if (instances == null || instances.isEmpty()) {
             return null;
         }
         
-        Random rand = new Random();
-        int instanceIndex = rand.nextInt(instances.size());
+        System.out.println("instances size: " + instances.size());
         
-        return instances.get(instanceIndex).getUri();
+        final ServiceInstance chosed = this.loadBalancer.choose(instances);
+        
+        return chosed.getUri();
     }
 }

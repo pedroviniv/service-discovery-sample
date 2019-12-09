@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class Test {
     
-    private EurekaService eurekaService;
+    private DiscoveryService discoveryService;
     private RestTemplate restTemplate;
     
     @Value("${products-api.id}")
@@ -30,15 +30,15 @@ public class Test {
     private String productEndPoint;
 
     @Autowired
-    public Test(EurekaService eurekaService, RestTemplate restTemplate) {
-        this.eurekaService = eurekaService;
+    public Test(DiscoveryService eurekaService, RestTemplate restTemplate) {
+        this.discoveryService = eurekaService;
         this.restTemplate = restTemplate;
     }
     
     @Scheduled(fixedDelay = 2000)
     public void run() {
         
-        final URI uri = this.eurekaService.getInstance(this.productsApiId);
+        final URI uri = this.discoveryService.getInstance(this.productsApiId);
         System.out.println("service instance: " + uri);
         String json = this.restTemplate.getForObject(uri.toString() + this.productEndPoint, String.class);
         System.out.println("returned: " + json);

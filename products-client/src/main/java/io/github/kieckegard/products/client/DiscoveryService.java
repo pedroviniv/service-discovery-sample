@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class EurekaService {
+public class DiscoveryService {
     
     private DiscoveryClient  discoveryClient;
 
     @Autowired
-    public EurekaService(DiscoveryClient discoveryClient) {
+    public DiscoveryService(DiscoveryClient discoveryClient) {
         this.discoveryClient = discoveryClient;
     }
 
